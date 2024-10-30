@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Productos;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,10 @@ class VentasController extends Controller
             'total' => $request->total,
             'producto_id' => $request->producto_id,
         ]);
+                $producto = Productos::find($request->producto_id);
+        $producto->stock -= $request->cantidad;
+        $producto->save();
+
         return back()->with('message', 'Venta realizada con exito');
     }
 }

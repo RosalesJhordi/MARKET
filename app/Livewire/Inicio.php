@@ -35,6 +35,9 @@ class Inicio extends Component
     public $egresos;
     public $ventas;
     public $egresosTotal;
+    public $editCaja;
+
+    public $id_caja;
     public $produc_rules = [
         'usuario' => 'required',
         'contraseña' => 'required|min:6|max:12',
@@ -79,9 +82,37 @@ class Inicio extends Component
             'permisos' => ['Caja'],
         ]);
         $this->reset(['usuario', 'contraseña']);
-        session()->flash('message', 'Caja creada con exito');
+        $this->dispatch('caja-agregada');
+        $this->usuaurios();
     }
 
+    public function editarCaja($id){
+        $this->editCaja = User::find($id);
+        $this->usuaurios();
+    }
+    public $editProducto;
+    public function editarProducto($id){
+        $this->editProducto = Productos::find($id);
+        $this->usuaurios();
+    }
+    public $editVenta;
+    public function editarVenta($id){
+        $this->editVenta = Ventas::find($id);
+        $this->usuaurios();
+    }
+    public function delCaja($id){
+        $caja = User::find($id);
+        $caja->delete();
+        $this->dispatch('caja-eliminada');
+        $this->usuaurios();
+    }
+
+    public function delProducto($id){
+        $producto = Productos::find($id);
+        $producto->delete();
+        $this->dispatch('producto-eliminado');
+        $this->usuaurios();
+    }
     public function render()
     {
         return view('livewire.inicio');

@@ -2,9 +2,9 @@
     <h1 class="py-2 text-2xl font-semibold">
         Inicio
     </h1>
-    <div class="sticky top-0 grid grid-cols-2 gap-2 py-2 bg-white md:grid-cols-3 lg:gap-5 xl:grid-cols-5">
+    <div class="grid grid-cols-2 gap-2 py-2 bg-white md:grid-cols-3 lg:gap-5 xl:grid-cols-5">
 
-        <div wire:poll="usuaurios" class="p-4 bg-gray-200">
+        <div class="p-4 bg-gray-200">
             <h2 class="flex items-center justify-between mb-4 text-xl font-bold">
                 Ingresos
             </h2>
@@ -19,7 +19,7 @@
                     </div>
                     <div>
                         <p class="text-lg font-bold">Total Ingresos</p>
-                        <p class="font-bold text-green-500">S/. {{ $ingresos }}</p>
+                        <p class="font-bold text-green-500">S/. {{ $ingresos - $egresos->sum('monto') }}</p>
                     </div>
                 </div>
             </div>
@@ -28,7 +28,8 @@
         <div class="p-4 bg-gray-200">
             <h2 class="flex items-center justify-between mb-4 text-xl font-bold">
                 Egresos
-                <button data-modal-target="egresos-modal" data-modal-toggle="egresos-modal" class="p-1 bg-red-500 rounded-full">
+                <button data-modal-target="egresos-modal" data-modal-toggle="egresos-modal"
+                    class="p-1 bg-red-500 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none"
                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -47,7 +48,7 @@
                     </div>
                     <div>
                         <p class="text-lg font-bold">Total Egresos</p>
-                        <p class="font-bold text-red-500">S/. {{$egresosTotal}}</p>
+                        <p class="font-bold text-red-500">S/. {{ $egresosTotal }}</p>
                     </div>
                 </div>
             </div>
@@ -157,9 +158,9 @@
     <div id="ventas-modal" tabindex="-1" aria-hidden="true" wire:ignore.self
         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-md max-h-full p-4">
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            <div class="relative bg-white rounded-lg shadow">
+                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5">
+                    <h3 class="text-xl font-semibold text-gray-900">
                         Agregar Venta
                     </h3>
                     <button type="button"
@@ -175,27 +176,32 @@
                 </div>
                 <!-- body -->
                 <div class="p-4 md:p-5">
-                    <form class="space-y-4" action="{{route('AddVenta')}}" method="POST" novalidate>
+                    <form class="space-y-4" action="{{ route('AddVenta') }}" method="POST" novalidate>
                         @csrf
                         <div>
                             <label for="categoria_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                class="block mb-2 text-sm font-medium text-gray-900 ">
                                 Producto
                             </label>
                             <select id="countries" wire:model.live="categoria_producto" name="producto_id"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  ">
                                 <option selected>Seleciona Producto</option>
                                 @foreach ($productos as $product)
-                                    <option value="{{ $product->id }}">{{ $product->nombre }} {{ $product->marca }}
+                                    <option value="{{ $product->id }}"
+                                        @if ($product->stock == 0) disabled class="text-red-500" @endif>
+                                        {{ $product->nombre }} {{ $product->marca }}
+                                        @if ($product->stock == 0)
+                                            (Agotado)
+                                        @endif
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                         <div>
                             <label for="cantidad"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cantidad</label>
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Cantidad</label>
                             <input type="number" name="cantidad" id="cantidad" wire:model.live="cantidad"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                 placeholder="0" required />
                             @error('cantidad')
                                 <p class="py-2 font-semibold text-red-500">{{ $message }}</p>
@@ -203,15 +209,15 @@
                         </div>
                         <div>
                             <label for="total"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total</label>
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Total</label>
                             <input type="number" name="total" id="total" placeholder="total" value="0"
                                 wire:model.live="total"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
                                 required />
                         </div>
 
                         <button type="submit"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Guardar</button>
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Guardar</button>
                     </form>
                 </div>
             </div>
@@ -223,9 +229,9 @@
         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
         <div class="relative w-full max-w-2xl max-h-full p-4">
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            <div class="relative bg-white rounded-lg shadow ">
+                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 ">
+                    <h3 class="text-xl font-semibold text-gray-900 ">
                         Agregar Egreso
                     </h3>
                     <button type="button"
@@ -245,21 +251,19 @@
                         @csrf
                         <div>
                             <label for="proveedor"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Proveedor</label>
-                            <input type="text" name="proveedor" id="proveedor"
-                                value="{{ old('usuario') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Proveedor</label>
+                            <input type="text" name="proveedor" id="proveedor" value="{{ old('usuario') }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
                         </div>
                         <div>
                             <label for="monto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Monto</label>
-                            <input type="number" name="monto" id="monto"
-                                value="{{ old('password') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Monto</label>
+                            <input type="number" name="monto" id="monto" value="{{ old('password') }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
                         </div>
 
                         <button type="submit"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
                             Agregar Egreso
                         </button>
                     </form>
@@ -269,8 +273,7 @@
     </div>
 
     {{-- productos modal --}}
-
-    @foreach (['nombre', 'marca', 'precio', 'categoria', 'stock', 'imagen','cantidad','total','producto_id','proveedor','monto'] as $campo)
+    @foreach (['nombre', 'marca', 'precio', 'categoria', 'stock', 'imagen', 'cantidad', 'total', 'producto_id', 'proveedor', 'monto'] as $campo)
         @if ($errors->has($campo))
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -295,9 +298,9 @@
         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
         <div class="relative w-full max-w-2xl max-h-full p-4">
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            <div class="relative bg-white rounded-lg shadow ">
+                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 ">
+                    <h3 class="text-xl font-semibold text-gray-900 ">
                         Agregar Producto
                     </h3>
                     <button type="button"
@@ -318,37 +321,34 @@
                         @csrf
                         <div>
                             <label for="nombre_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Nombre de
                                 producto</label>
-                            <input type="text" wire:model.live='nombre_producto' name="nombre"
-                                id="nombre_producto" value="{{ old('nombre') }}"
+                            <input type="text" name="nombre" id="nombre_producto" value="{{ old('nombre') }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                 " />
                         </div>
                         <div>
                             <label for="marca_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Marca de
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Marca de
                                 producto</label>
-                            <input type="text" wire:model.live="marca_producto" name="marca"
-                                id="marca_producto" value="{{ old('narca') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                            <input type="text" name="marca" id="marca_producto" value="{{ old('narca') }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
                         </div>
                         <div>
                             <label for="precio_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Precio de
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Precio de
                                 producto</label>
-                            <input type="text" wire:model.live="precio_producto" name="precio"
-                                id="precio_producto" value="{{ old('precio') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                            <input type="text" name="precio" id="precio_producto" value="{{ old('precio') }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
 
                         </div>
                         <div>
                             <label for="categoria_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                class="block mb-2 text-sm font-medium text-gray-900 ">
                                 Categoria
                             </label>
-                            <select id="countries" wire:model.live="categoria_producto" name="categoria"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <select id="countries" name="categoria"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                                 <option selected>Seleciona Categoria</option>
                                 <option value="Bebida">Bebida</option>
                                 <option value="Regalo">Regalo</option>
@@ -357,22 +357,22 @@
                         </div>
                         <div>
                             <label for="stock_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock de
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Stock de
                                 producto</label>
-                            <input type="number" wire:model.live="stock_producto" name="stock"
-                                id="stock_producto" value="{{ old('stock') }}"
+                            <input type="number" name="stock" id="stock_producto" value="{{ old('stock') }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                                 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                                 " />
 
                         </div>
                         <div>
                             <label for="imagen_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Imagen</label>
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Imagen</label>
                             <input type="file" name="imagen" id="imagen"
                                 class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <button type="submit"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm
+                            px-5 py-2.5 text-center ">
                             Agregar
                         </button>
                     </form>
@@ -386,13 +386,14 @@
         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
         <div class="relative w-full max-w-2xl max-h-full p-4">
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            <div class="relative bg-white rounded-lg shadow ">
+                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 ">
+                    <h3 class="text-xl font-semibold text-gray-900 ">
                         Agregar Caja
                     </h3>
                     <button type="button"
-                        class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex
+                        justify-center items-center"
                         data-modal-hide="cajas-modal">
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 14 14">
@@ -408,28 +409,28 @@
                         @csrf
                         <div>
                             <label for="usuario"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usuario para
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Usuario para
                                 caja</label>
                             <input type="text" name="usuario" wire:model.live="usuario" id="usuario"
                                 value="{{ old('usuario') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
                             @error('usuario')
                                 <p class="py-2 text-red-500 font-semobold">{{ $message }}</p>
                             @enderror
                         </div>
                         <div>
                             <label for="contraseña"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Contraseña</label>
                             <input type="password" name="contraseña" wire:model.live="contraseña" id="contraseña"
                                 value="{{ old('password') }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "/>
                             @error('contraseña')
                                 <p class="py-2 text-red-500 font-semobold">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <button type="button" wire:click="addCaja"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
                             Agregar caja
                         </button>
                     </form>
@@ -437,6 +438,101 @@
             </div>
         </div>
     </div>
+
+    {{-- edit modal cajas --}}
+    <dialog id="my_modal_1" class="modal" wire:ignore.self>
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="absolute btn btn-sm btn-circle btn-ghost right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-xl font-semibold text-gray-900 ">
+                Editar caja
+            </h3>
+            <!-- body -->
+            <div class="p-4 md:p-5">
+                <form class="space-y-4" method="POST" action="{{ route('EditCaja') }}">
+                    @csrf
+                    @if ($editCaja)
+                        <div>
+                            <label for="usuario" class="block mb-2 text-sm font-medium text-gray-900 ">Nuevo Usuario
+                                para
+                                caja</label>
+                            <input type="text" name="usuario" id="usuario" value="{{ $editCaja->usuario }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
+                            @error('usuario')
+                                <p class="py-2 text-red-500 font-semobold">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="contraseña" class="block mb-2 text-sm font-medium text-gray-900 ">Contraseña
+                                nueva</label>
+                            <input type="password" name="password" id="contraseña"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
+                            @error('contraseña')
+                                <p class="py-2 text-red-500 font-semobold">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <input type="hidden" name="id" value="{{ $editCaja->id }}">
+
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                            Guardar cambios
+                        </button>
+                    @endif
+                </form>
+            </div>
+
+        </div>
+    </dialog>
+
+    {{-- edit modal productos --}}
+    <dialog id="my_modal_2" class="modal" wire:ignore.self>
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="absolute btn btn-sm btn-circle btn-ghost right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-xl font-semibold text-gray-900 ">
+                Editar Producto
+            </h3>
+            <!-- body -->
+            <div class="p-4 md:p-5">
+                <form class="space-y-4" method="POST" action="{{ route('EditProducto') }}">
+                    @csrf
+                    @if ($editProducto)
+                        <div>
+                            <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900 ">Nombre</label>
+                            <input type="text" name="nombre" id="usuario" value="{{ $editProducto->nombre }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
+                        </div>
+                        <div>
+                            <label for="marca" class="block mb-2 text-sm font-medium text-gray-900 ">Marca</label>
+                            <input type="text" name="marca" id="marca" value="{{ $editProducto->marca }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
+                        </div>
+                        <div>
+                            <label for="precio" class="block mb-2 text-sm font-medium text-gray-900 ">Precio</label>
+                            <input type="text" name="precio" id="precio" value="{{ $editProducto->precio }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
+                        </div>
+                        <div>
+                            <label for="stock" class="block mb-2 text-sm font-medium text-gray-900 ">Stock</label>
+                            <input type="number" name="stock" id="stock" value="{{ $editProducto->stock }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " />
+                        </div>
+                        <input type="hidden" name="id" value="{{ $editProducto->id }}">
+
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center d">
+                            Guardar cambios
+                        </button>
+                    @endif
+                </form>
+            </div>
+
+        </div>
+    </dialog>
+
+
 
     {{-- tabla --}}
 
@@ -448,10 +544,14 @@
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead class="bg-gray-200">
                         <tr>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Usuario</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Permisos</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Acciones</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID
+                            </th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Usuario</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Permisos</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -465,8 +565,12 @@
                                     @endforeach
                                 </td>
                                 <td class="px-6 py-4 text-sm">
-                                    <button class="px-3 py-1 text-red-600 bg-red-100 rounded-md hover:bg-red-200">Eliminar</button>
-                                    <button class="px-3 py-1 text-green-600 bg-green-100 rounded-md hover:bg-green-200">Editar</button>
+                                    <button type="button" wire:click="delCaja({{ $usuario->id }})"
+                                        wire:confirm="Estas seguro que desea eliminar esta caja"
+                                        class="px-3 py-1 text-red-600 bg-red-100 rounded-md hover:bg-red-200">Eliminar</button>
+                                    <button type="button" wire:click="editarCaja({{ $usuario->id }})"
+                                        onclick="my_modal_1.showModal()"
+                                        class="px-3 py-1 text-green-600 bg-green-100 rounded-md hover:bg-green-200">Editar</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -482,26 +586,40 @@
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead class="bg-gray-200">
                         <tr>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Nombre</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Precio</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Categoría</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Acciones</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID
+                            </th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Nombre</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Precio</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Categoría</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Stock</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($productos as $producto)
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->id }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->nombre }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->precio }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->categoria }}</td>
-                                <td class="px-6 py-4 text-sm">
-                                    <button class="px-3 py-1 text-red-600 bg-red-100 rounded-md hover:bg-red-200">Eliminar</button>
-                                    <button class="px-3 py-1 text-green-600 bg-green-100 rounded-md hover:bg-green-200">Editar</button>
-                                </td>
-                            </tr>
-                        @endforeach
+                        @if (!empty($productos))
+                            @foreach ($productos as $producto)
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->id }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->nombre }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->precio }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->categoria }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-800">{{ $producto->stock }}</td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <button type="button" wire:click="delCaja({{ $usuario->id }})"
+                                            wire:confirm="Estas seguro que desea eliminar esta caja"
+                                            class="px-3 py-1 text-red-600 bg-red-100 rounded-md hover:bg-red-200">Eliminar</button>
+                                        <button wire:click="editarProducto({{ $producto->id }})"
+                                            onclick="my_modal_2.showModal()"
+                                            class="px-3 py-1 text-green-600 bg-green-100 rounded-md hover:bg-green-200">Editar</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -514,27 +632,31 @@
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead class="bg-gray-200">
                         <tr>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Producto</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Cantidad</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Total</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Fecha</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Acciones</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID
+                            </th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Producto</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Cantidad</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Total</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Fecha</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @if (!empty($ventas))
                         @foreach ($ventas as $venta)
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="px-6 py-4 text-sm text-gray-800">{{ $venta->id }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ $venta->producto->nombre }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-800">{{ $venta->producto->nombre .' '. $venta->producto->marca  }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-800">{{ $venta->cantidad }}</td>
                                 <td class="px-6 py-4 text-sm text-green-500">{{ $venta->total }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ $venta->created_at->diffForHumans() }}</td>
-                                <td class="px-6 py-4 text-sm">
-                                    <button class="px-3 py-1 text-red-600 bg-red-100 rounded-md hover:bg-red-200">Eliminar</button>
+                                <td class="px-6 py-4 text-sm text-gray-800">{{ $venta->created_at->diffForHumans() }}
                                 </td>
                             </tr>
                         @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -547,25 +669,28 @@
                 <table class="min-w-full bg-white border border-gray-300 rounded-lg">
                     <thead class="bg-gray-200">
                         <tr>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Proveedor</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Monto</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Fecha</th>
-                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">Acciones</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">ID
+                            </th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Proveedor</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Monto</th>
+                            <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                                Fecha</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @if (!empty($egresos))
                         @foreach ($egresos as $egreso)
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="px-6 py-4 text-sm text-gray-800">{{ $egreso->id }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-800">{{ $egreso->proveedor }}</td>
                                 <td class="px-6 py-4 text-sm text-red-600">{{ $egreso->monto }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ $egreso->created_at->diffForHumans() }}</td>
-                                <td class="px-6 py-4 text-sm">
-                                    <button class="px-3 py-1 text-red-600 bg-red-100 rounded-md hover:bg-red-200">Eliminar</button>
+                                <td class="px-6 py-4 text-sm text-gray-800">{{ $egreso->created_at->diffForHumans() }}
                                 </td>
                             </tr>
                         @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -573,3 +698,45 @@
     </div>
 
 </div>
+<script>
+    window.addEventListener('caja-eliminada', event => {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Caja eliminada con exito",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    });
+    window.addEventListener('caja-agregada', event => {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Caja creada con exito",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    });
+    window.addEventListener('datos-editados', event => {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Datos actualizados con exito",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    });
+    window.addEventListener('producto-eliminado', event => {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Producto eliminada con exito",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    });
+    window.addEventListener('modal-editar-caja', event => {
+        const modal = document.getElementById('edit-caja-modal');
+        modal.classList.toggle('hidden');
+    });
+</script>

@@ -23,9 +23,17 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            $user = Auth::user();
+            Auth::user();
 
-            return redirect()->route('/');
+            if(Auth::user()->permisos){
+                foreach (Auth::user()->permisos as $permiso) {
+                    if ($permiso == 'Administrador') {
+                        return redirect()->route('/');
+                    } else {
+                        return redirect()->route('Productos');
+                    }
+                }
+            }
         } else {
             return redirect()->route('login')->with('error', 'Credenciales incorrectas');
         }

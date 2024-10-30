@@ -43,4 +43,13 @@ class ProductosController extends Controller
         ]);
         return back()->with('message', 'Producto agregado correctamente.');
     }
+
+    //editar producto
+    public function editarProducto(Request $request){
+        $producto = Productos::find($request->id);
+        $producto->fill($request->all());
+        $producto->save();
+
+        return back()->with('message', 'Producto actualizado correctamente.');
+    }
 }

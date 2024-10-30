@@ -19,7 +19,11 @@ class Movimientos extends Component
     public $ventas;
     public $egresosTotal;
     public $movimientos;
-    public $total = 0;
+    public $totalc = 0;
+    public $total;
+    public $categoria_producto;
+    public $cantidad;
+    public $precio;
     public function mount()
     {
         $this->usuaurios();
@@ -34,7 +38,6 @@ class Movimientos extends Component
         $this->ventas = Ventas::all();
         $this->egresos = Egresos::all();
         $this->egresosTotal = Egresos::pluck('monto')->sum();
-        $this->total = $this->ingresos - $this->egresosTotal;
 
         $egresos = Egresos::select('id',
             DB::raw("CONCAT('Proveedor: ', proveedor) as descripcion"),
@@ -55,6 +58,18 @@ class Movimientos extends Component
             ->union($ventas)
             ->orderByDesc('created_at')
             ->get();
+    }
+    public function updatedCategoriaProducto()
+    {
+        if ($this->categoria_producto != 'Seleciona Producto') {
+            $producto = Productos::find($this->categoria_producto);
+            $this->precio = $producto->precio;
+        }else{
+            $this->total = 0;
+        }
+    }
+    public function updatedCantidad(){
+        $this->total = $this->cantidad * $this->precio;
     }
     public function render()
     {
