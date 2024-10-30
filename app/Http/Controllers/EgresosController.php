@@ -27,4 +27,11 @@ class EgresosController extends Controller
         //redireccionar
         return back()->with('message','Egreso registrado correctamente');
     }
+    public function editarEgreso(Request $request){
+        $venta = Egresos::find($request->id);
+        $venta->fill($request->all());
+        $venta->save();
+
+        return back()->with('message', 'Egreso actualizado correctamente.');
+    }
 }

@@ -32,6 +32,10 @@ class Ventas extends Component
     public function updatedCantidad(){
         $this->total = $this->cantidad * $this->precio;
     }
+    public $editVenta;
+    public function editarVenta($id){
+        $this->editVenta = ModelsVentas::find($id);
+    }
     public function render()
     {
         return view('livewire.ventas');

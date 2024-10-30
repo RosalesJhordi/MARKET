@@ -71,6 +71,16 @@ class Movimientos extends Component
     public function updatedCantidad(){
         $this->total = $this->cantidad * $this->precio;
     }
+    public $editVenta;
+    public function editarVenta($id){
+        $this->editVenta = Ventas::find($id);
+        $this->usuaurios();
+    }
+    public $editEgreso;
+    public function editarEgreso($id){
+        $this->editEgreso = Egresos::find($id);
+        $this->usuaurios();
+    }
     public function render()
     {
         return view('livewire.movimientos');

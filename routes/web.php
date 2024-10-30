@@ -21,10 +21,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('Ventas', [VentasController::class, 'index'])->name('Ventas');
     Route::post('Ventas', [VentasController::class, 'addVenta'])->name('AddVenta');
+    Route::post('EditVentas', [VentasController::class, 'editarVenta'])->name('EditVentas');
 
     Route::get('Cajas', [CajasController::class, 'index'])->name('Cajas');
     Route::post('Caja', [CajasController::class, 'editCaja'])->name('EditCaja');
 
     Route::get('Movimientos', [EgresosController::class, 'index'])->name('Movimientos');
     Route::post('Egresos', [EgresosController::class, 'store'])->name('AddEgreso');
+    Route::post('EditEgresos', [EgresosController::class, 'editarEgreso'])->name('EditEgreso');
 });

@@ -30,4 +30,12 @@ class VentasController extends Controller
 
         return back()->with('message', 'Venta realizada con exito');
     }
+
+    public function editarVenta(Request $request){
+        $venta = Ventas::find($request->id);
+        $venta->fill($request->all());
+        $venta->save();
+
+        return back()->with('message', 'Venta actualizada correctamente.');
+    }
 }

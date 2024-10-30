@@ -1,7 +1,7 @@
 <div class="w-full">
 
     <!-- Contenedor de mensajes -->
-    <div class="p-2 mb-4 overflow-y-auto bg-white rounded-md shadow-inner h-96" style="display: flex; flex-direction: column-reverse;">
+    <div class="h-48 p-2 mb-4 overflow-y-auto bg-white rounded-md shadow-inner md:h-80" style="display: flex; flex-direction: column-reverse;">
         @foreach (array_reverse($botResponse) as $index => $response)
             <div class="flex {{ $response['from'] === 'user' ? 'justify-end' : 'justify-start' }} mb-2">
                 <div class="max-w-xs {{ $response['from'] === 'user' ? 'bg-green-200 text-right' : 'bg-gray-200 text-left' }} p-2 rounded-lg">

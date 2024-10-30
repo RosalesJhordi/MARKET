@@ -1,32 +1,32 @@
 <div class="w-full px-4 py-2 xl:py-4 xl:px-4">
-    <h1 class="py-2 text-2xl font-semibold">
+    <h1 class="py-2 font-semibold text-md md:text-2xl">
         Productos
     </h1>
 
     <div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:gap-5 xl:grid-cols-5">
 
-        <div class="p-4 bg-gray-200">
-            <h2 class="flex items-center justify-between mb-4 text-xl font-bold">
+        <div class="p-2 bg-gray-200 md:p-4">
+            <h2 class="flex items-center justify-between mb-2 text-sm font-bold md:mb-4 md:text-xl">
                 Productos
                 <button data-modal-target="productos-modal" data-modal-toggle="productos-modal"
                     class="p-1 rounded-full bg-cyan-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white md:w-5 md:h-5" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                 </button>
             </h2>
-            <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
+            <div class="flex items-center justify-between p-1 bg-white rounded-lg shadow-md md:p-4">
                 <div class="flex items-center">
-                    <div class="flex items-center justify-center w-12 h-12 mr-4 rounded-full bg-cyan-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
+                    <div class="flex items-center justify-center w-12 mr-4 rounded-full md:h-12 h-9 bg-cyan-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white md:w-8 md:h-8" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                         </svg>
                     </div>
                     <div>
-                        <p class="text-lg font-bold">Total Productos</p>
+                        <p class="text-sm font-bold md:text-lg">Total Productos</p>
                         <p class="font-bold text-green-500">{{ count($productos) }}</p>
                     </div>
                 </div>
@@ -151,8 +151,8 @@
         </div>
     </div>
 
-    <div class="flex items-center justify-between w-full py-2">
-        <h1 class="py-2 text-2xl font-semibold">Productos</h1>
+    <div class="flex flex-col items-center justify-between w-full py-2 md:flex-row">
+        <h1 class="py-2 font-semibold text-md md:text-2xl">Productos</h1>
         <form class="">
             <div class="flex">
                 <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only ">Filtro</label>
@@ -192,20 +192,20 @@
         </form>
 
     </div>
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
+    <div class="grid grid-cols-2 gap-2 md:gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
         @foreach ($productos as $producto)
             <div class="w-full bg-white border border-gray-200 rounded-lg shadow ">
-                <img class="w-full rounded-t-lg h-52 imagen"
+                <img class="w-full h-40 rounded-t-lg md:h-52 imagen"
                     src="{{ asset('ServidorProductos/' . $producto->imagen) }}" alt="Imagen" />
-                <div class="p-5">
+                <div class="p-1 md:p-5">
                     <a href="#">
-                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">
+                        <h5 class="text-sm font-bold tracking-tight text-gray-900 md:mb-2 md:text-2xl ">
                             {{ $producto->nombre }}</h5>
                     </a>
-                    <p class="text-base text-gray-700">Marca: {{ $producto->marca }}</p>
-                    <p class="text-base text-gray-700">Precio: S/. {{ number_format($producto->precio, 2) }}</p>
-                    <p class="text-base text-gray-700">Categoría: {{ $producto->categoria }}</p>
-                    <p class="text-base text-gray-700">Stock: {{ $producto->stock }}</p>
+                    <p class="text-sm text-gray-700 md:text-base">Marca: {{ $producto->marca }}</p>
+                    <p class="text-sm text-gray-700 md:text-base">Precio: S/. {{ number_format($producto->precio, 2) }}</p>
+                    <p class="text-sm text-gray-700 md:text-base">Categoría: {{ $producto->categoria }}</p>
+                    <p class="text-sm text-gray-700 md:text-base">Stock: {{ $producto->stock }}</p>
                 </div>
                 <div class="w-full px-2 mb-2">
                     <button data-modal-target="ventas-modal" data-modal-toggle="ventas-modal"

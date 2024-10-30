@@ -7,7 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>James - Login</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- CSS de Flowbite -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet">
+
+<!-- JS de Flowbite -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
 </head>
 
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
@@ -19,7 +32,7 @@
         </div>
 
         <h2 class="text-2xl font-bold text-center text-gray-900">Iniciar sesión</h2>
-        
+
         @if (session('error'))
             <div class="p-1 text-sm font-semibold text-center text-white bg-red-500 rounded-sm">{{ session('error') }}
             </div>

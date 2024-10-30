@@ -100,6 +100,11 @@ class Inicio extends Component
         $this->editVenta = Ventas::find($id);
         $this->usuaurios();
     }
+    public $editEgreso;
+    public function editarEgreso($id){
+        $this->editEgreso = Egresos::find($id);
+        $this->usuaurios();
+    }
     public function delCaja($id){
         $caja = User::find($id);
         $caja->delete();

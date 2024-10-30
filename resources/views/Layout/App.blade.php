@@ -14,7 +14,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- CSS de Flowbite -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet">
+
+<!-- JS de Flowbite -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+
+
 </head>
 <body class="flex flex-col justify-between xl:flex-row">
     <header class="flex justify-between w-full px-1 py-1 lg:py-4 lg:px-4 item-center xl:hidden">

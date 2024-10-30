@@ -1,24 +1,24 @@
 <div class="w-full px-4 py-2 xl:py-4 xl:px-4">
-    <h1 class="py-2 text-2xl font-semibold">
+    <h1 class="py-2 font-semibold text-md md:text-2xl">
         Ventas
     </h1>
     <div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:gap-5 xl:grid-cols-5">
 
-        <div class="p-4 bg-gray-200">
-            <h2 class="flex items-center justify-between mb-4 text-xl font-bold">
+        <div class="p-2 bg-gray-200 md:p-4">
+            <h2 class="flex items-center justify-between mb-2 text-sm font-bold md:mb-4 md:text-xl">
                 Ventas
                 <button data-modal-target="ventas-modal" data-modal-toggle="ventas-modal"
                     class="p-1 rounded-full bg-lime-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white md:w-5 md:h-5" fill="none"
                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                 </button>
             </h2>
-            <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
+            <div class="flex items-center justify-between p-1 bg-white rounded-lg shadow-md md:p-4">
                 <div class="flex items-center">
-                    <div class="flex items-center justify-center w-12 h-12 mr-4 rounded-full bg-lime-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
+                    <div class="flex items-center justify-center w-12 mr-4 rounded-full md:h-12 h-9 bg-lime-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white md:w-8 md:h-8" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -26,7 +26,7 @@
 
                     </div>
                     <div>
-                        <p class="text-lg font-bold">Total Ventas</p>
+                        <p class="text-sm font-bold md:text-lg">Total Ventas</p>
                         <p class="font-bold text-green-500">{{ count($ventas) }}</p>
                     </div>
                 </div>
@@ -110,6 +110,64 @@
             </div>
         </div>
     </div>
+    {{-- edit modal ventas --}}
+    <dialog id="my_modal_23" class="modal" wire:ignore.self>
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="absolute btn btn-sm btn-circle btn-ghost right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-xl font-semibold text-gray-900 ">
+                Editar Venta
+            </h3>
+            <!-- body -->
+            <div class="p-4 md:p-5">
+                <form class="space-y-4" method="POST" action="{{ route('EditVentas') }}">
+                    @csrf
+                    @if ($editVenta)
+                        <div>
+                            <label for="categoria_producto" class="block mb-2 text-sm font-medium text-gray-900 ">
+                                Producto
+                            </label>
+                            <select id="countries" name="producto_id" value="{{ $editVenta->producto_id }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  ">
+                                <option selected>Seleciona Producto</option>
+                                @foreach ($productos as $product)
+                                    <option value="{{ $product->id }}"
+                                        @if ($product->stock == 0) disabled class="text-red-500" @endif>
+                                        {{ $product->nombre }} {{ $product->marca }}
+                                        @if ($product->stock == 0)
+                                            (Agotado)
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="cantidad"
+                                class="block mb-2 text-sm font-medium text-gray-900 ">Cantidad</label>
+                            <input type="number" name="cantidad" id="cantidad" value="{{ $editVenta->cantidad }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                placeholder="0" required />
+                        </div>
+                        <div>
+                            <label for="total" class="block mb-2 text-sm font-medium text-gray-900 ">Total</label>
+                            <input type="number" name="total" id="total" placeholder="total" value="0"
+                                value="{{ $editVenta->total }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
+                                required />
+                        </div>
+                        <input type="hidden" name="id" value="{{ $editVenta->id }}">
+
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center d">
+                            Guardar cambios
+                        </button>
+                    @endif
+                </form>
+            </div>
+
+        </div>
+    </dialog>
 
     {{-- ventas --}}
 
@@ -141,6 +199,8 @@
                     <th scope="col" class="px-6 py-4">Marca</th>
                     <th scope="col" class="px-6 py-4">Cantidad</th>
                     <th scope="col" class="px-6 py-4">Total</th>
+                    <th class="px-6 py-3 text-xs font-semibold text-left text-gray-700 uppercase border-b">
+                        Acciones</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200 ">
@@ -157,6 +217,11 @@
                         </td>
                         <td class="px-6 py-4 font-semibold text-green-600 ">
                             ${{ number_format($venta->total, 2) }}
+                        </td>
+                        <td class="px-6 py-4 text-sm">
+                            <button wire:click="editarVenta({{ $venta->id }})"
+                                onclick="my_modal_23.showModal()"
+                                class="px-3 py-1 text-green-600 bg-green-100 rounded-md hover:bg-green-200">Editar</button>
                         </td>
                     </tr>
                 @endforeach
