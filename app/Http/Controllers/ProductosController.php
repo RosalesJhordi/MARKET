@@ -12,8 +12,6 @@ class ProductosController extends Controller
     public function index(){
         return view('Productos');
     }
-
-    //funcion para eliminar productos
     //funcion para gurdar produtos
     public function guardarProducto(Request $request){
         $request->validate([

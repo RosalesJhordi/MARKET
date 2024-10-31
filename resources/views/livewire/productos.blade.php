@@ -203,12 +203,14 @@
                             {{ $producto->nombre }}</h5>
                     </a>
                     <p class="text-sm text-gray-700 md:text-base">Marca: {{ $producto->marca }}</p>
-                    <p class="text-sm text-gray-700 md:text-base">Precio: S/. {{ number_format($producto->precio, 2) }}</p>
+                    <p class="text-sm text-gray-700 md:text-base">Precio: S/.
+                        {{ number_format($producto->precio, 2) }}</p>
                     <p class="text-sm text-gray-700 md:text-base">Categoría: {{ $producto->categoria }}</p>
                     <p class="text-sm text-gray-700 md:text-base">Stock: {{ $producto->stock }}</p>
                 </div>
                 <div class="w-full px-2 mb-2">
-                    <button data-modal-target="ventas-modal" data-modal-toggle="ventas-modal"
+                    <button wire:click="seleccProducto({{ $producto->id }})" data-modal-target="ventas-modal"
+                        data-modal-toggle="ventas-modal"
                         class="w-full p-1 text-white bg-lime-500 hover:bg-green-500 btn">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none"
                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -251,16 +253,27 @@
                             </label>
                             <select id="countries" wire:model.live="categoria_producto" name="producto_id"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  ">
-                                <option selected>Seleciona Producto</option>
-                                @foreach ($productos as $product)
-                                    <option value="{{ $product->id }}"
-                                        @if ($product->stock == 0) disabled class="text-red-500" @endif>
-                                        {{ $product->nombre }} {{ $product->marca }}
-                                        @if ($product->stock == 0)
+
+                                @isset($productoSelec)
+                                    <option value="{{ $productoSelec->id }}"
+                                        @if ($productoSelec->stock == 0) disabled class="text-red-500" @endif>
+                                        {{ $productoSelec->nombre }} {{ $productoSelec->marca }}
+                                        @if ($productoSelec->stock == 0)
                                             (Agotado)
                                         @endif
                                     </option>
-                                @endforeach
+                                @else
+                                    <option selected>Seleciona Producto</option>
+                                    @foreach ($productos as $product)
+                                        <option value="{{ $product->id }}"
+                                            @if ($product->stock == 0) disabled class="text-red-500" @endif>
+                                            {{ $product->nombre }} {{ $product->marca }}
+                                            @if ($product->stock == 0)
+                                                (Agotado)
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                @endisset
                             </select>
                         </div>
                         <div>
@@ -275,7 +288,7 @@
                         </div>
                         <div>
                             <label for="total" class="block mb-2 text-sm font-medium text-gray-900 ">Total</label>
-                            <input type="number" name="total" id="total" placeholder="total" value="0"
+                            <input type="number" name="total" id="total" placeholder="total" value="{{ $total }}"
                                 wire:model.live="total"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
                                 required />

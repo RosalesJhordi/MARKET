@@ -60,19 +60,18 @@
                         data-modal-hide="ventas-modal">
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                         </svg>
                         <span class="sr-only">Cerrar modal</span>
                     </button>
                 </div>
                 <!-- body -->
                 <div class="p-4 md:p-5">
-                    <form class="space-y-4" action="{{route('AddVenta')}}" method="POST" novalidate>
+                    <form class="space-y-4" action="{{ route('AddVenta') }}" method="POST" novalidate>
                         @csrf
                         <div>
-                            <label for="categoria_producto"
-                                class="block mb-2 text-sm font-medium text-gray-900 ">
+                            <label for="categoria_producto" class="block mb-2 text-sm font-medium text-gray-900 ">
                                 Producto
                             </label>
                             <select id="countries" wire:model.live="categoria_producto" name="producto_id"
@@ -85,8 +84,7 @@
                             </select>
                         </div>
                         <div>
-                            <label for="cantidad"
-                                class="block mb-2 text-sm font-medium text-gray-900">Cantidad</label>
+                            <label for="cantidad" class="block mb-2 text-sm font-medium text-gray-900">Cantidad</label>
                             <input type="number" name="cantidad" id="cantidad" wire:model.live="cantidad"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                 placeholder="0" required />
@@ -95,8 +93,7 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="total"
-                                class="block mb-2 text-sm font-medium text-gray-900 ">Total</label>
+                            <label for="total" class="block mb-2 text-sm font-medium text-gray-900 ">Total</label>
                             <input type="number" name="total" id="total" placeholder="total" value="0"
                                 wire:model.live="total"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
@@ -130,16 +127,23 @@
                             </label>
                             <select id="countries" name="producto_id" value="{{ $editVenta->producto_id }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  ">
-                                <option selected>Seleciona Producto</option>
-                                @foreach ($productos as $product)
-                                    <option value="{{ $product->id }}"
-                                        @if ($product->stock == 0) disabled class="text-red-500" @endif>
-                                        {{ $product->nombre }} {{ $product->marca }}
-                                        @if ($product->stock == 0)
-                                            (Agotado)
-                                        @endif
+
+                                @isset($editVenta)
+                                    <option value="{{ $editVenta->producto_id }}">
+                                        {{ $editVenta->producto->nombre }} {{ $editVenta->producto->marca }}
                                     </option>
-                                @endforeach
+                                @else
+                                    <option selected>Seleciona Producto</option>
+                                    @foreach ($productos as $product)
+                                        <option value="{{ $product->id }}"
+                                            @if ($product->stock == 0) disabled class="text-red-500" @endif>
+                                            {{ $product->nombre }} {{ $product->marca }}
+                                            @if ($product->stock == 0)
+                                                (Agotado)
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                @endisset
                             </select>
                         </div>
                         <div>
@@ -148,13 +152,6 @@
                             <input type="number" name="cantidad" id="cantidad" value="{{ $editVenta->cantidad }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                 placeholder="0" required />
-                        </div>
-                        <div>
-                            <label for="total" class="block mb-2 text-sm font-medium text-gray-900 ">Total</label>
-                            <input type="number" name="total" id="total" placeholder="total" value="0"
-                                value="{{ $editVenta->total }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
-                                required />
                         </div>
                         <input type="hidden" name="id" value="{{ $editVenta->id }}">
 
@@ -171,7 +168,7 @@
 
     {{-- ventas --}}
 
-    @foreach (['nombre', 'marca', 'precio', 'categoria', 'stock', 'imagen','cantidad','total','producto_id'] as $campo)
+    @foreach (['nombre', 'marca', 'precio', 'categoria', 'stock', 'imagen', 'cantidad', 'total', 'producto_id'] as $campo)
         @if ($errors->has($campo))
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -216,11 +213,10 @@
                             {{ $venta->cantidad }}
                         </td>
                         <td class="px-6 py-4 font-semibold text-green-600 ">
-                            ${{ number_format($venta->total, 2) }}
+                            S/. {{ number_format($venta->total, 2) }}
                         </td>
                         <td class="px-6 py-4 text-sm">
-                            <button wire:click="editarVenta({{ $venta->id }})"
-                                onclick="my_modal_23.showModal()"
+                            <button wire:click="editarVenta({{ $venta->id }})" onclick="my_modal_23.showModal()"
                                 class="px-3 py-1 text-green-600 bg-green-100 rounded-md hover:bg-green-200">Editar</button>
                         </td>
                     </tr>

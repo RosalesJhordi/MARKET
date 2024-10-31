@@ -16,8 +16,11 @@ class Ventas extends Component
     public $cantidad;
     public $precio;
     public $productos;
+    public $productoSelec;
+    public $id;
+
     public function mount(){
-        $this->ventas = ModelsVentas::all();
+        $this->ventas = ModelsVentas::orderBy('created_at', 'desc')->get();
         $this->productos = Productos::all();
     }
     public function updatedCategoriaProducto()
@@ -29,8 +32,15 @@ class Ventas extends Component
             $this->total = 0;
         }
     }
+    public function seleccProducto($id){
+        $this->id = $id;
+        $this->productoSelec = Productos::find($id);
+        $this->precio = $this->productoSelec->precio;
+
+    }
     public function updatedCantidad(){
         $this->total = $this->cantidad * $this->precio;
+        
     }
     public $editVenta;
     public function editarVenta($id){

@@ -546,16 +546,23 @@
                             </label>
                             <select id="countries" name="producto_id" value="{{ $editVenta->producto_id }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  ">
-                                <option selected>Seleciona Producto</option>
-                                @foreach ($productos as $product)
-                                    <option value="{{ $product->id }}"
-                                        @if ($product->stock == 0) disabled class="text-red-500" @endif>
-                                        {{ $product->nombre }} {{ $product->marca }}
-                                        @if ($product->stock == 0)
-                                            (Agotado)
-                                        @endif
+
+                                @isset($editVenta)
+                                    <option value="{{ $editVenta->producto_id }}">
+                                        {{ $editVenta->producto->nombre }} {{ $editVenta->producto->marca }}
                                     </option>
-                                @endforeach
+                                @else
+                                    <option selected>Seleciona Producto</option>
+                                    @foreach ($productos as $product)
+                                        <option value="{{ $product->id }}"
+                                            @if ($product->stock == 0) disabled class="text-red-500" @endif>
+                                            {{ $product->nombre }} {{ $product->marca }}
+                                            @if ($product->stock == 0)
+                                                (Agotado)
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                @endisset
                             </select>
                         </div>
                         <div>
@@ -564,13 +571,6 @@
                             <input type="number" name="cantidad" id="cantidad" value="{{ $editVenta->cantidad }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                 placeholder="0" required />
-                        </div>
-                        <div>
-                            <label for="total" class="block mb-2 text-sm font-medium text-gray-900 ">Total</label>
-                            <input type="number" name="total" id="total" placeholder="total" value="0"
-                                value="{{ $editVenta->total }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
-                                required />
                         </div>
                         <input type="hidden" name="id" value="{{ $editVenta->id }}">
 

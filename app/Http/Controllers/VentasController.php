@@ -33,9 +33,15 @@ class VentasController extends Controller
 
     public function editarVenta(Request $request){
         $venta = Ventas::find($request->id);
+        $producto = Productos::find($request->producto_id);
+
+        $total = $request->cantidad * $producto->precio;
+
         $venta->fill($request->all());
+        $venta->total = $total;
         $venta->save();
 
         return back()->with('message', 'Venta actualizada correctamente.');
     }
+
 }
